@@ -20,18 +20,18 @@ def add_site_name_clean(df: pd.DataFrame, site_col: str = "site_name") -> pd.Dat
     """
     s = df[site_col].fillna("").str.lower()
     out = df.copy()
-    out["site_name_clean"] = "unknown"
+    out["site_name_clean"] = "Not clear"
 
     for word, kind in [
         ("university", "university"),
         ("college", "college"),
     ]:
         pick = s.str.contains(word, regex=False, na=False) & (
-            out["site_name_clean"] == "unknown"
+            out["site_name_clean"] == "Not clear"
         )
         out.loc[pick, "site_name_clean"] = kind
 
-    unk = out["site_name_clean"] == "unknown"
+    unk = out["site_name_clean"] == "Not clear"
 
     high = (
         s.str.contains(r"high school|senior high|secondary school", regex=True, na=False)
@@ -39,7 +39,7 @@ def add_site_name_clean(df: pd.DataFrame, site_col: str = "site_name") -> pd.Dat
     ) & unk
     out.loc[high, "site_name_clean"] = "High_school"
 
-    unk = out["site_name_clean"] == "Unknown"
+    unk = out["site_name_clean"] == "Not clear"
     primary = (
         s.str.contains(
             r"elementary|middle school|junior high|kindergarten|pre[-\s]?k|primary school|"
@@ -69,7 +69,7 @@ def add_site_name_clean(df: pd.DataFrame, site_col: str = "site_name") -> pd.Dat
     ]:
         pick = s.str.contains(word, regex=False, na=False) & unk
         out.loc[pick, "site_name_clean"] = kind
-        unk = out["site_name_clean"] == "unknown"
+        unk = out["site_name_clean"] == "Not clear"
 
     return out
 
